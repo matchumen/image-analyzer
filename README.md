@@ -1,3 +1,3 @@
 # image-analyzer
 ---------------------------------
-Image analysis bachelor project
+Image analysis bachelor project, in development.

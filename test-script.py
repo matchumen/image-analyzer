@@ -3,3 +3,5 @@
 #desktop test
 #jeste jednou
 #sdasdasdasd
+
+print("hello");

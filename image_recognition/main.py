@@ -10,8 +10,15 @@ height, width, channel = img.shape; #delete channel if grayscale
 for x in range(width):
     for y in range(height):
         #Do manual grayscale
-        img[y,x]=10;
+        #img[y,x]=155;
+        r=img[y,x][0]*0.30;
+        g=img[y,x][1]*0.59;
+        b=img[y,x][2]*0.11;
+        img[y,x][0]=r;
+        img[y,x][1]=r;
+        img[y,x][2]=r;
+        #print(img[y,x])
 
-
+cv2.imshow('cat2',img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

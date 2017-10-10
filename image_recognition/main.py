@@ -7,16 +7,11 @@ img = cv2.imread('img/kitten.jpg',1)
 cv2.imshow('cat',img)
 height, width, channel = img.shape; #delete channel if grayscale
 
-for x in range(width):
-    for y in range(height):
+for i in range(width):
+    for j in range(height):
         #Do manual grayscale
         #img[y,x]=155;
-        r=img[y,x][0]*0.30;
-        g=img[y,x][1]*0.59;
-        b=img[y,x][2]*0.11;
-        img[y,x][0]=r;
-        img[y,x][1]=r;
-        img[y,x][2]=r;
+        img[j,i] = img[j,i,0] * 0.3 + img[j,i,1] * 0.59 + img[j,i,2] * 0.11
         #print(img[y,x])
 
 cv2.imshow('cat2',img)

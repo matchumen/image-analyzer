@@ -10,7 +10,7 @@ def histogram(grayscale_image):
         for j in range(height):
             intensity = grayscale_image[j,i,0]
             hist[intensity] += 1
-    plt.title("Histogram")
+    plt.title("Custom Histogram")
     plt.xlabel("Intensity")
     plt.ylabel("Amount")
     plt.plot(hist)
@@ -26,12 +26,19 @@ def custom_grayscale(img):
 
     return img
 
+def calcHistExample(grayscale_image):
+    """opencv example""" 
+    hist = cv2.calcHist([grayscale_image],[0],None,[256],[0,256])
+    plt.plot(hist)
+    plt.show()
+
 def main():
     img = cv2.imread('img/kitten.jpg',1)#0 grayscale, 1 colored
-    cv2.imshow('cat',img)
+    #cv2.imshow('cat',img)
     img_grayscale = custom_grayscale(img)
-    cv2.imshow('cat2',img_grayscale)
-    histogram(img_grayscale)
+    #cv2.imshow('cat2',img_grayscale)
+    #histogram(img_grayscale)
+    #calcHistExample(img_grayscale)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 

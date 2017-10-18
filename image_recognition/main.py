@@ -68,10 +68,10 @@ def main():
     histogram(img_grayscale)
     calcHistExample(img_grayscale)5
     """
-    #img_YCbCv = colorSpace_YCbCv(img)
+    img_YCbCv = colorSpace_YCbCv(img)
     img_2 = cv2.cvtColor(img, cv2.COLOR_RGB2YCR_CB)
-    #cv2.imshow('custom', img_YCbCv)
-    cv2.imshow('inbuilt', showChannel(img_2, 2))
+    cv2.imshow('custom', showChannel(img_YCbCv, 2))
+    cv2.imshow('inbuilt', showChannel(img_2,2))
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()

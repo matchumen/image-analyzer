@@ -32,16 +32,16 @@ def calcHistExample(grayscale_image):
     plt.plot(hist)
     plt.show()
 
-def colorSpace_YCbCv(img):
+def colorSpace_YCbCr(img):
     """custom implementation of CVTCOLOR"""
     height, width, channel = img.shape
-    img_YCRCB = img.copy();
+    _img = img.copy()
     for i in range(width):
         for j in range(height):
-            img_YCRCB[j,i,0] = ((img_YCRCB[j,i,0]*0.257)+16) + ((img_YCRCB[j,i,1]*0.504) + 128) + ((img_YCRCB[j,i,2]*0.098)+128)
-            img_YCRCB[j,i,1] = ((img_YCRCB[j,i,0]*-0.148)+16) + ((img_YCRCB[j,i,1]*-0.291) + 128) + ((img_YCRCB[j,i,2]*0.439)+128)
-            img_YCRCB[j,i,2] = ((img_YCRCB[j,i,0]*0.439)+16) + ((img_YCRCB[j,i,1]*-0.368) + 128) + ((img_YCRCB[j,i,2]*-0.071)+128)
-    return img_YCRCB
+            _img[j,i,0] = ((_img[j,i,0]*0.257)+16) + ((_img[j,i,1]*0.504) + 128) + ((_img[j,i,2]*0.098)+128) #Y
+            _img[j,i,1] = ((_img[j,i,0]*-0.148)+16) + ((_img[j,i,1]*-0.291) + 128) + ((_img[j,i,2]*0.439)+128) #Cb
+            _img[j,i,2] = ((_img[j,i,0]*0.439)+16) + ((_img[j,i,1]*-0.368) + 128) + ((_img[j,i,2]*-0.071)+128) #Cr
+    return _img
 
 def showChannel(img, channel):
     x = img.copy()
@@ -59,19 +59,22 @@ def showChannel(img, channel):
 
 def main():
     obrazek = 'img/kostky.png'
-    img = cv2.imread(obrazek,1)#0 grayscale, 1 colored
+    img = cv2.imread(obrazek,1)#0 grayscale, 1 colored BGR format
 
     """
     cv2.imshow('cat',img)
     img_grayscale = custom_grayscale(img)
     cv2.imshow('cat2',img_grayscale)
-    histogram(img_grayscale)
-    calcHistExample(img_grayscale)5
+    histogram(img_grayscale)5
+    calcHistExample(img_grayscale)
     """
-    img_YCbCv = colorSpace_YCbCv(img)
-    img_2 = cv2.cvtColor(img, cv2.COLOR_RGB2YCR_CB)
-    cv2.imshow('custom', showChannel(img_YCbCv, 2))
-    cv2.imshow('inbuilt', showChannel(img_2,2))
+ 
+    img_YCbCr = colorSpace_YCbCr(img)
+    img_2 = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+    cv2.imshow("def", img)
+    cv2.imshow('custom', img_YCbCr)
+    cv2.imshow('inbuilt', img_2)
+
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()

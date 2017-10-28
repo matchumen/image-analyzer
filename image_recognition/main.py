@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+import matplotlib as mpl
 
 def histogram(grayscale_image):
     """Custom histogram"""
@@ -10,6 +11,8 @@ def histogram(grayscale_image):
         for j in range(height):
             intensity = grayscale_image[j,i,0]
             hist[intensity] += 1
+
+    plt.colorbar()
     plt.title("Custom Histogram")
     plt.xlabel("Intensity")
     plt.ylabel("Amount")
@@ -22,7 +25,7 @@ def custom_grayscale(img):
     for i in range(width):
         for j in range(height):
             #img[y,x]=155;
-            img[j,i] = img[j,i,0] * 0.3 + img[j,i,1] * 0.59 + img[j,i,2] * 0.11
+            img[j,i] = img[j,i,2] * 0.3 + img[j,i,1] * 0.59 + img[j,i,0] * 0.11
 
     return img
 
@@ -38,9 +41,9 @@ def colorSpace_YCbCr(img):
     _img = img.copy()
     for i in range(width):
         for j in range(height):
-            _img[j,i,0] = ((_img[j,i,0]*0.257)+16) + ((_img[j,i,1]*0.504) + 128) + ((_img[j,i,2]*0.098)+128) #Y
-            _img[j,i,1] = ((_img[j,i,0]*-0.148)+16) + ((_img[j,i,1]*-0.291) + 128) + ((_img[j,i,2]*0.439)+128) #Cb
-            _img[j,i,2] = ((_img[j,i,0]*0.439)+16) + ((_img[j,i,1]*-0.368) + 128) + ((_img[j,i,2]*-0.071)+128) #Cr
+            _img[j,i,0] = ((_img[j,i,0]*0.257) + (_img[j,i,1]*0.504) + (_img[j,i,2]*0.098)) + 16 #Y
+            _img[j,i,1] = ((_img[j,i,0]*-0.148) + (_img[j,i,1]*-0.291) + (_img[j,i,2]*0.439)) + 128 #Cb
+            _img[j,i,2] = ((_img[j,i,0]*0.439) + (_img[j,i,1]*-0.368) + (_img[j,i,2]*-0.071))+ 128 #Cr
     return _img
 
 def showChannel(img, channel):
@@ -62,6 +65,7 @@ def main():
     img = cv2.imread(obrazek,1)#0 grayscale, 1 colored BGR format
 
     """
+    #sezeni2 vlastní histogramy a grayscale
     cv2.imshow('cat',img)
     img_grayscale = custom_grayscale(img)
     cv2.imshow('cat2',img_grayscale)
@@ -69,11 +73,31 @@ def main():
     calcHistExample(img_grayscale)
     """
  
+    """
+    #sezeni 3 vlastni Ycbcr
     img_YCbCr = colorSpace_YCbCr(img)
     img_2 = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
     cv2.imshow("def", img)
     cv2.imshow('custom', img_YCbCr)
     cv2.imshow('inbuilt', img_2)
+    """
+
+    #sezeni 4 Segmentace obrazu na základě histogramu, zobrazit colorbar
+    img_ycbcr = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+    img_ycbcr = cv2.cvtColor(showChannel(img_ycbcr,1), cv2.COLOR_RGB2GRAY)
+    cv2.imshow("Puvodni", img)
+    cv2.imshow('Seda Cr slozka', img_ycbcr)
+    calcHistExample(img_ycbcr)
+    hranice = 120 #podle histogramu
+    height, width,  = img_ycbcr.shape
+    for i in range(width):
+        for j in range(height):
+            if(img_ycbcr[j,i] < hranice):
+                img[j,i,0] = img[j,i,1] = img[j,i,2] = 0
+
+                 
+    cv2.imshow("Segmentace", img)
+
 
 
     cv2.waitKey(0)

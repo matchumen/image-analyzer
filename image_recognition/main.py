@@ -11,8 +11,6 @@ def histogram(grayscale_image):
         for j in range(height):
             intensity = grayscale_image[j,i,0]
             hist[intensity] += 1
-
-    plt.colorbar()
     plt.title("Custom Histogram")
     plt.xlabel("Intensity")
     plt.ylabel("Amount")
@@ -59,6 +57,11 @@ def showChannel(img, channel):
         x[:, :, 1] = 0
     return x
 
+def imShowColorBar(img):
+    imgplot = plt.imshow(img)
+    plt.colorbar()
+    plt.show()
+
 
 def main():
     obrazek = 'img/kostky.png'
@@ -84,20 +87,20 @@ def main():
 
     #sezeni 4 Segmentace obrazu na základě histogramu, zobrazit colorbar
     img_ycbcr = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
-    img_ycbcr = cv2.cvtColor(showChannel(img_ycbcr,1), cv2.COLOR_RGB2GRAY)
+    imShowColorBar(img_ycbcr)
+    img_ycbcr = custom_grayscale(showChannel(img_ycbcr,1))
     cv2.imshow("Puvodni", img)
-    cv2.imshow('Seda Cr slozka', img_ycbcr)
+    cv2.imshow('Seda 1/2 slozka', img_ycbcr)
     calcHistExample(img_ycbcr)
-    hranice = 120 #podle histogramu
-    height, width,  = img_ycbcr.shape
+    hranice = 50 #podle histogramu 120 pro cr, 50 cb
+    height, width, channel  = img_ycbcr.shape
     for i in range(width):
         for j in range(height):
-            if(img_ycbcr[j,i] < hranice):
+            if(img_ycbcr[j,i,0] < hranice):
                 img[j,i,0] = img[j,i,1] = img[j,i,2] = 0
 
                  
     cv2.imshow("Segmentace", img)
-
 
 
     cv2.waitKey(0)

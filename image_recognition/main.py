@@ -44,6 +44,26 @@ def colorSpace_YCbCr(img):
             _img[j,i,2] = ((_img[j,i,0]*0.439) + (_img[j,i,1]*-0.368) + (_img[j,i,2]*-0.071))+ 128 #Cr
     return _img
 
+def colorSpace_HSI(img):
+    height, width, channel = img.shape
+    HSI = np.zeros((height,width,channel))
+    for i in range(width):
+        for j in range(height):
+            #0-255 na 0-1 interval
+            r = img[j,i,0]/255
+            g = img[j,i,1]/255
+            b = img[j,i,2]/255
+            citatel = (1/2)*((r-g)+(r-b))
+            jmenovatel = ((r-g)**2+(r-b)*(g-b))**(1/2)
+            H = np.arccos(citatel/jmenovatel+0.000001)
+            S = 1-(3/(r+g+b)+0.000001)*min([r,g,b])
+            I = (r+g+b)/3
+            HSI[j,i,0] = H
+            HSI[j,i,1] = S
+            HSI[j,i,2] = I
+    return HSI
+
+
 def showChannel(img, channel):
     x = img.copy()
     if(channel==0):
@@ -66,7 +86,7 @@ def imShowColorBar(img):
 def main():
     obrazek = 'img/kostky.png'
     img = cv2.imread(obrazek,1)#0 grayscale, 1 colored BGR format
-
+    img_HSI = colorSpace_HSI(img)
     """
     #sezeni2 vlastní histogramy a grayscale
     cv2.imshow('cat',img)
@@ -84,24 +104,22 @@ def main():
     cv2.imshow('custom', img_YCbCr)
     cv2.imshow('inbuilt', img_2)
     """
-
+    """
     #sezeni 4 Segmentace obrazu na základě histogramu, zobrazit colorbar
     img_ycbcr = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
     imShowColorBar(img_ycbcr)
-    img_ycbcr = custom_grayscale(showChannel(img_ycbcr,1))
+    img_ycbcr = custom_grayscale(showChannel(img_ycbcr,1))img_HSI = colorSpace_HSI(img)
     cv2.imshow("Puvodni", img)
     cv2.imshow('Seda 1/2 slozka', img_ycbcr)
     calcHistExample(img_ycbcr)
-    hranice = 50 #podle histogramu 120 pro cr, 50 cb
+    hranice = 120 #podle histogramu 120 pro cr, 50 cb
     height, width, channel  = img_ycbcr.shape
     for i in range(width):
         for j in range(height):
             if(img_ycbcr[j,i,0] < hranice):
                 img[j,i,0] = img[j,i,1] = img[j,i,2] = 0
-
-                 
     cv2.imshow("Segmentace", img)
-
+    """
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()

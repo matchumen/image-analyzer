@@ -87,6 +87,7 @@ def main():
     obrazek = 'img/kostky.png'
     img = cv2.imread(obrazek,1)#0 grayscale, 1 colored BGR format
     img_HSI = colorSpace_HSI(img)
+    imShowColorBar(img_HSI)
     """
     #sezeni2 vlastní histogramy a grayscale
     cv2.imshow('cat',img)

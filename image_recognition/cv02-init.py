@@ -16,7 +16,10 @@ pocet = hist_object[indexMaxHodnoty]
 hist_object = hist_object.astype(dtype="double")
 for i in range(len(hist_object)):
     hist_object[i] = round((hist_object[i]/pocet),3);
-plt.plot(hist_object) #110 až 140
+#plt.plot(hist_object) 
+prah_dolni = 115;
+prah_horni = 135;
+init = True;
 
 while True:
     ret, frame = cap.read()
@@ -24,21 +27,34 @@ while True:
         break 
     height, width, channel = frame.shape
     frame_hsv = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
-    maska = frame_hsv
     hist, b = np.histogram(frame_hsv[:,:,0], 256, (0, 256))
-    for i in range(width):
-        for j in range(height):
-            if(frame_hsv[j,i,0]<110 or frame_hsv[j,i,0] > 140):
-                maska[j,i,0] = 0   
-                maska[j,i,1] = 0
-                maska[j,i,2] = 0 
-            #Xt= sum(sum())
-            #Yt= sum(sum())
-    frame = cv2.cvtColor(frame_hsv, cv2.COLOR_HSV2RGB)
-    x1 = 100
-    y1 = 100
-    x2 = 200
-    y2 = 200
+    frame_hsv[(frame_hsv[:,:, 0] < prah_dolni) | (frame_hsv[:,:, 0] > prah_horni)] = 0
+    frame_hsv[(frame_hsv[..., 0] >= prah_dolni) & (frame_hsv[..., 0] <= prah_horni)] = 255
+    x_sum = 0
+    y_sum = 0
+    x_times = 0
+    y_times = 0
+    if (init):
+        for i in range(width):
+            for j in range(height):
+                if (frame_hsv[j, i, 0] == 255):
+                    x_sum += i
+                    y_sum += j
+                    x_times += 1
+                    y_times += 1
+                    init = False;
+    else:
+        for i in range(x1, x2-1):
+            for j in range(y1, y2-1):
+                if (frame_hsv[j, i, 0] == 255):
+                    x_sum += i
+                    y_sum += j
+                    x_times += 1
+                    y_times += 1
+    x1 = int(x_sum/x_times)-50
+    y1 = int(y_sum/y_times)-70
+    x2 = int(x_sum/x_times)+50
+    y2 = int(y_sum/y_times)+70
     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0))
     cv2.imshow('Image', frame)
     key = 0xFF & cv2.waitKey(30)
